@@ -1,0 +1,28 @@
+{
+  "users": {
+    "admin": {
+      "role": "admin",
+      "password": "admin123",
+      "info": {
+        "name": "Administrator",
+        "email": "admin@example.com"
+      }
+    },
+    "instructor01": {
+      "role": "instructor",
+      "password": "teach123",
+      "info": {
+        "name": "giáo viên 1",
+        "email": "lecturer1@example.com"
+      }
+    },
+    "student01": {
+      "role": "student",
+      "password": "123456",
+      "info": {
+        "name": "Nguyễn Văn A",
+        "email": "student1@example.com"
+      }
+    }
+  }
+}
