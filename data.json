@@ -20,8 +20,8 @@
       "role": "student",
       "password": "123456",
       "info": {
-        "name": "Nguyễn Tấn Bão",
-        "email": "student01@example.com"
+        "name": "0",
+        "email": "2"
       },
       "grades": {},
       "id": "S001"
@@ -54,7 +54,8 @@
         "yenvy"
       ],
       "grades": {
-        "student01": 8.0
+        "student01": 8.0,
+        "yenvy": 8.0
       }
     }
   }

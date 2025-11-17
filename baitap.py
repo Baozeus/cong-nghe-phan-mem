@@ -162,7 +162,7 @@ def admin_menu(data: Dict[str, Any], username: str):
     while True:
         print("\n--- Admin Menu ---")
         print("1. Create new account")
-        print("2. Manage students (add/edit/delete)")
+        print("2. Manage students (add/delete)")
         print("3. Manage courses (create/edit/delete/assign instructor/add/remove student)")
         print("4. List all users")
         print("0. Log out")
@@ -213,15 +213,12 @@ def manage_students(data: Dict[str, Any]):
     while True:
         print("\n--- Manage Students ---")
         print("1. Add student")
-        print("2. Edit student")
-        print("3. Delete student")
+        print("2. Delete student")
         print("0. Back")
         c = input("Choose: ").strip()
         if c == "1":
             create_account_for_role(data, "student")
         elif c == "2":
-            edit_student(data)
-        elif c == "3":
             delete_student(data)
         elif c == "0":
             break
@@ -246,28 +243,6 @@ def create_account_for_role(data: Dict[str, Any], role: str):
         user_obj["id"] = get_next_student_id(data)
     data["users"][uname] = user_obj
     print("Created successfully.")
-
-def edit_student(data: Dict[str, Any]):
-    uname = input("Student username to edit: ").strip()
-    u = data["users"].get(uname)
-    if not u or u.get("role") != "student":
-        print("Student not found.")
-        return
-    print("Leave blank to keep unchanged.")
-    name = input(f"Name [{u.get('info',{}).get('name','')}]: ").strip()
-    email = input(f"Email [{u.get('info',{}).get('email','')}]: ").strip()
-    pw = input("New password (leave blank to keep): ").strip()
-    change_id = input(f"Student ID [{u.get('id','')}], leave blank to keep or type new ID: ").strip()
-    if name:
-        u["info"]["name"] = name
-    if email:
-        u["info"]["email"] = email
-    if pw:
-        u["password"] = pw
-    if change_id:
-        u["id"] = change_id
-    data["users"][uname] = u
-    print("Student updated successfully.")
 
 def delete_student(data: Dict[str, Any]):
     uname = input("Student username to delete: ").strip()
@@ -312,7 +287,7 @@ def manage_courses(data: Dict[str, Any]):
             print("Invalid selection.")
 
 def create_course(data: Dict[str, Any]):
-    cid = input("Course ID (e.g. IT101): ").strip()
+    cid = input("Course ID: ").strip()
     if not cid or cid in data["courses"]:
         print("Invalid or existing course ID.")
         return
