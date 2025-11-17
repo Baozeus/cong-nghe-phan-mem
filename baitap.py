@@ -14,8 +14,7 @@ def save_data(data: Dict[str, Any]) -> None:
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-# ---------- student ID helpers ----------
-def _existing_student_numbers(data: Dict[str, Any]) -> set:
+def existing_student_numbers(data: Dict[str, Any]) -> set:
     nums = set()
     for u in data.get("users", {}).values():
         if u.get("role") == "student":
@@ -28,14 +27,14 @@ def _existing_student_numbers(data: Dict[str, Any]) -> set:
     return nums
 
 def get_next_student_id(data: Dict[str, Any]) -> str:
-    nums = _existing_student_numbers(data)
+    nums = existing_student_numbers(data)
     n = 1
     while n in nums:
         n += 1
     return f"S{n:03d}"
 
 def ensure_student_ids(data: Dict[str, Any]) -> None:
-    nums = _existing_student_numbers(data)
+    nums = existing_student_numbers(data)
     max_n = max(nums) if nums else 0
     for uname, info in data.get("users", {}).items():
         if info.get("role") == "student" and "id" not in info:
