@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-Student Management CLI (simple)
-Roles: student, instructor, admin
-Data persisted in data.json
-"""
 
 import json
 import os
@@ -55,7 +49,7 @@ def authenticate(data: Dict[str, Any], username: str, password: str) -> Optional
     return None
 
 
-# ----------------- student functions -----------------
+
 def student_menu(data: Dict[str, Any], username: str):
     while True:
         print("\n--- Student Menu ---")
@@ -97,7 +91,7 @@ def update_personal_info(data: Dict[str, Any], username: str):
     print("Updated successfully.")
 
 
-# ----------------- instructor functions -----------------
+
 def instructor_menu(data: Dict[str, Any], username: str):
     while True:
         print("\n--- Instructor Menu ---")
@@ -164,7 +158,7 @@ def enter_grades(data: Dict[str, Any], username: str):
             print("Invalid grade. Enter a number (e.g. 8.0).")
 
 
-# ----------------- admin functions -----------------
+
 def admin_menu(data: Dict[str, Any], username: str):
     while True:
         print("\n--- Admin Menu ---")
@@ -402,7 +396,7 @@ def list_users(data: Dict[str, Any]):
         print(f"- {uname} ({u['role']}) - {u.get('info', {}).get('name','')}")
 
 
-# ----------------- main -----------------
+
 def main():
     data = load_data()
     seed_if_empty(data)

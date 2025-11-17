@@ -20,7 +20,7 @@
   },
   "courses": {
     "CS101": {
-      "name": "Introduction to Programming",
+      "name": "Software Engineering",
       "instructor": "instructor01",
       "students": [
         "student01"
