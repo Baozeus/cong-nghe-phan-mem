@@ -1,4 +1,3 @@
-
 import json
 import os
 from typing import Dict, Any, Optional
@@ -15,6 +14,34 @@ def save_data(data: Dict[str, Any]) -> None:
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
+# ---------- student ID helpers ----------
+def _existing_student_numbers(data: Dict[str, Any]) -> set:
+    nums = set()
+    for u in data.get("users", {}).values():
+        if u.get("role") == "student":
+            sid = u.get("id")
+            if isinstance(sid, str) and sid.startswith("S"):
+                try:
+                    nums.add(int(sid[1:]))
+                except ValueError:
+                    pass
+    return nums
+
+def get_next_student_id(data: Dict[str, Any]) -> str:
+    nums = _existing_student_numbers(data)
+    n = 1
+    while n in nums:
+        n += 1
+    return f"S{n:03d}"
+
+def ensure_student_ids(data: Dict[str, Any]) -> None:
+    nums = _existing_student_numbers(data)
+    max_n = max(nums) if nums else 0
+    for uname, info in data.get("users", {}).items():
+        if info.get("role") == "student" and "id" not in info:
+            max_n += 1
+            info["id"] = f"S{max_n:03d}"
+            data["users"][uname] = info
 
 def authenticate(data: Dict[str, Any], username: str, password: str) -> Optional[Dict[str, Any]]:
     u = data["users"].get(username)
@@ -23,8 +50,6 @@ def authenticate(data: Dict[str, Any], username: str, password: str) -> Optional
     if u["password"] == password:
         return {"username": username, **u}
     return None
-
-
 
 def student_menu(data: Dict[str, Any], username: str):
     while True:
@@ -44,7 +69,9 @@ def student_menu(data: Dict[str, Any], username: str):
             print("Invalid selection.")
 
 def view_student_grades(data: Dict[str, Any], username: str):
-    print(f"\nGrades of {username}:")
+    student = data["users"].get(username, {})
+    sid = student.get("id", "")
+    print(f"\nGrades of {username} {f'({sid})' if sid else ''}:")
     found = False
     for cid, c in data["courses"].items():
         if username in c.get("students", []):
@@ -56,7 +83,7 @@ def view_student_grades(data: Dict[str, Any], username: str):
 
 def update_personal_info(data: Dict[str, Any], username: str):
     info = data["users"][username].get("info", {})
-    print("\nUpdate personal information (leave blank to keep unchanged):")
+    print("\nUpdate personal information:")
     name = input(f"Name [{info.get('name','')}]: ").strip()
     email = input(f"Email [{info.get('email','')}]: ").strip()
     if name:
@@ -65,8 +92,6 @@ def update_personal_info(data: Dict[str, Any], username: str):
         info["email"] = email
     data["users"][username]["info"] = info
     print("Updated successfully.")
-
-
 
 def instructor_menu(data: Dict[str, Any], username: str):
     while True:
@@ -116,7 +141,8 @@ def enter_grades(data: Dict[str, Any], username: str):
     for i, s in enumerate(course["students"], 1):
         current = course.get("grades", {}).get(s, "None")
         info = data["users"].get(s, {}).get("info", {})
-        print(f"{i}. {s} ({info.get('name','-')}) -> Current grade: {current}")
+        sid = data["users"].get(s, {}).get("id", "")
+        print(f"{i}. {s} {f'({sid})' if sid else ''} ({info.get('name','-')}) -> Current grade: {current}")
     while True:
         target = input("Enter student username to grade (or 'q' to quit): ").strip()
         if target.lower() == 'q':
@@ -132,8 +158,6 @@ def enter_grades(data: Dict[str, Any], username: str):
             print("Grade saved.")
         except ValueError:
             print("Invalid grade.")
-
-
 
 def admin_menu(data: Dict[str, Any], username: str):
     while True:
@@ -176,11 +200,14 @@ def create_account(data: Dict[str, Any]):
     pw = input("Password: ").strip()
     name = input("Name: ").strip()
     email = input("Email: ").strip()
-    data["users"][uname] = {
+    user_obj = {
         "role": role,
         "password": pw,
         "info": {"name": name, "email": email}
     }
+    if role == "student":
+        user_obj["id"] = get_next_student_id(data)
+    data["users"][uname] = user_obj
     print("Account created successfully.")
 
 def manage_students(data: Dict[str, Any]):
@@ -211,11 +238,14 @@ def create_account_for_role(data: Dict[str, Any], role: str):
     pw = input("Password: ").strip()
     name = input("Name: ").strip()
     email = input("Email: ").strip()
-    data["users"][uname] = {
+    user_obj = {
         "role": role,
         "password": pw,
         "info": {"name": name, "email": email}
     }
+    if role == "student":
+        user_obj["id"] = get_next_student_id(data)
+    data["users"][uname] = user_obj
     print("Created successfully.")
 
 def edit_student(data: Dict[str, Any]):
@@ -225,15 +255,18 @@ def edit_student(data: Dict[str, Any]):
         print("Student not found.")
         return
     print("Leave blank to keep unchanged.")
-    name = input(f"Name [{u['info'].get('name','')}]: ").strip()
-    email = input(f"Email [{u['info'].get('email','')}]: ").strip()
+    name = input(f"Name [{u.get('info',{}).get('name','')}]: ").strip()
+    email = input(f"Email [{u.get('info',{}).get('email','')}]: ").strip()
     pw = input("New password (leave blank to keep): ").strip()
+    change_id = input(f"Student ID [{u.get('id','')}], leave blank to keep or type new ID: ").strip()
     if name:
         u["info"]["name"] = name
     if email:
         u["info"]["email"] = email
     if pw:
         u["password"] = pw
+    if change_id:
+        u["id"] = change_id
     data["users"][uname] = u
     print("Student updated successfully.")
 
@@ -369,13 +402,16 @@ def remove_student_from_course(data: Dict[str, Any]):
 def list_users(data: Dict[str, Any]):
     print("\nUsers list:")
     for uname, u in data["users"].items():
-        print(f"- {uname} ({u['role']}) - {u.get('info', {}).get('name','')}")
-
-
+        role = u.get("role", "")
+        name = u.get("info", {}).get("name", "")
+        sid = u.get("id", "")
+        print(f"- {uname} ({role}) - {name}{f' - {sid}' if sid else ''}")
 
 def main():
     data = load_data()
+    ensure_student_ids(data)
     save_data(data)
+
     print("=== Student Management System ===")
     while True:
         print("\n1. Log in")

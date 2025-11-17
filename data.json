@@ -23,7 +23,26 @@
         "name": "Nguyễn Tấn Bão",
         "email": "student01@example.com"
       },
-      "grades": {}
+      "grades": {},
+      "id": "S001"
+    },
+    "yenvy": {
+      "role": "student",
+      "password": "123456",
+      "info": {
+        "name": "Yen Vy",
+        "email": "Yenvy@gmail.com"
+      },
+      "id": "S002"
+    },
+    "binh": {
+      "role": "student",
+      "password": "123456",
+      "info": {
+        "name": "Bình",
+        "email": "Bing@gmail.com"
+      },
+      "id": "S003"
     }
   },
   "courses": {
@@ -31,7 +50,8 @@
       "name": "Software Engineering",
       "instructor": "instructor01",
       "students": [
-        "student01"
+        "student01",
+        "yenvy"
       ],
       "grades": {
         "student01": 8.0
