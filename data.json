@@ -2,17 +2,25 @@
   "users": {
     "admin": {
       "role": "admin",
-      "password": "admin123"
+      "password": "admin123",
+      "info": {
+        "name": "Administrator",
+        "email": "admin@example.com"
+      }
     },
     "instructor01": {
       "role": "instructor",
-      "password": "teach123"
+      "password": "teach123",
+      "info": {
+        "name": "Miss Tiên",
+        "email": "MissTien@example.com"
+      }
     },
     "student01": {
       "role": "student",
       "password": "123456",
       "info": {
-        "name": "Nguyen Van A",
+        "name": "Nguyễn Tấn Bão",
         "email": "student01@example.com"
       },
       "grades": {}

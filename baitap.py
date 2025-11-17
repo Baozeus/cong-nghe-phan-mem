@@ -124,14 +124,14 @@ def enter_grades(data: Dict[str, Any], username: str):
         if target not in course["students"]:
             print("Student not in this class.")
             continue
-        raw = input("Enter grade (number, e.g. 7.5): ").strip()
+        raw = input("Enter grade: ").strip()
         try:
             grade = float(raw)
             course.setdefault("grades", {})[target] = grade
             data["courses"][cid] = course
             print("Grade saved.")
         except ValueError:
-            print("Invalid grade. Enter a number (e.g. 8.0).")
+            print("Invalid grade.")
 
 
 
