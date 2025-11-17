@@ -15,30 +15,6 @@ def save_data(data: Dict[str, Any]) -> None:
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-def seed_if_empty(data: Dict[str, Any]) -> None:
-    if not data["users"]:
-        # default admin
-        data["users"]["admin"] = {
-            "role": "admin",
-            "password": "admin123",
-            "info": {"name": "Administrator", "email": "admin@example.com"}
-        }
-    if not data["courses"]:
-        data["users"].setdefault("lecturer1", {
-            "role": "instructor",
-            "password": "teach123",
-            "info": {"name": "Miss Tien", "email": "lecturer1@example.com"}
-        })
-        data["users"].setdefault("student1", {
-            "role": "student",
-            "password": "study123",
-            "info": {"name": "Nguyen Van A", "email": "student1@example.com"}
-        })
-        data["courses"]["IT101"] = {
-            "name": "Software Engineering",
-            "instructor": "lecturer01",
-            "students": ["student01"],
-            "grades": {"student01": 8.5}}
 
 def authenticate(data: Dict[str, Any], username: str, password: str) -> Optional[Dict[str, Any]]:
     u = data["users"].get(username)
@@ -399,7 +375,6 @@ def list_users(data: Dict[str, Any]):
 
 def main():
     data = load_data()
-    seed_if_empty(data)
     save_data(data)
     print("=== Student Management System ===")
     while True:
