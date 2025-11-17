@@ -2,26 +2,31 @@
   "users": {
     "admin": {
       "role": "admin",
-      "password": "admin123",
-      "info": {
-        "name": "Administrator",
-        "email": "admin@example.com"
-      }
+      "password": "admin123"
     },
     "instructor01": {
       "role": "instructor",
-      "password": "teach123",
-      "info": {
-        "name": "giáo viên 1",
-        "email": "lecturer1@example.com"
-      }
+      "password": "teach123"
     },
     "student01": {
       "role": "student",
       "password": "123456",
       "info": {
-        "name": "Nguyễn Văn A",
-        "email": "student1@example.com"
+        "name": "Nguyen Van A",
+        "email": "student01@example.com"
+      },
+      "grades": {}
+    }
+  },
+  "courses": {
+    "CS101": {
+      "name": "Introduction to Programming",
+      "instructor": "instructor01",
+      "students": [
+        "student01"
+      ],
+      "grades": {
+        "student01": 8.0
       }
     }
   }

@@ -33,13 +33,18 @@ def seed_if_empty(data: Dict[str, Any]) -> None:
         data["users"].setdefault("lecturer1", {
             "role": "instructor",
             "password": "teach123",
-            "info": {"name": "Dr. Lecturer", "email": "lecturer1@example.com"}
+            "info": {"name": "Miss Tien", "email": "lecturer1@example.com"}
         })
         data["users"].setdefault("student1", {
             "role": "student",
             "password": "study123",
             "info": {"name": "Nguyen Van A", "email": "student1@example.com"}
         })
+        data["courses"]["IT101"] = {
+            "name": "Software Engineering",
+            "instructor": "lecturer01",
+            "students": ["student01"],
+            "grades": {"student01": 8.5}}
 
 def authenticate(data: Dict[str, Any], username: str, password: str) -> Optional[Dict[str, Any]]:
     u = data["users"].get(username)
@@ -97,7 +102,7 @@ def instructor_menu(data: Dict[str, Any], username: str):
     while True:
         print("\n--- Instructor Menu ---")
         print("1. View assigned courses")
-        print("2. Enter/edit grades for students")
+        print("2. Edit grades for students")
         print("0. Log out")
         choice = input("Choose: ").strip()
         if choice == "1":
